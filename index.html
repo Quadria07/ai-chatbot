@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dray Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #chatbox { width: 50%; margin: auto; border: 1px solid #ccc; padding: 10px; }
+        .message { margin: 10px 0; padding: 8px; border-radius: 5px; }
+        .user { background: #007bff; color: white; text-align: right; }
+        .bot { background: #f1f1f1; text-align: left; }
+        input, button { padding: 10px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>Chatbot</h2>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function sendMessage() {
+            let userMessage = document.getElementById('userInput').value;
+            if (!userMessage) return;
+
+            let chatbox = document.getElementById('chatbox');
+            chatbox.innerHTML += `<div class="message user">${userMessage}</div>`;
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMessage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += `<div class="message bot">${data.response}</div>`;
+                document.getElementById('userInput').value = '';
+            });
+        }
+    </script>
+
+</body>
+</html>
